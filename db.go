@@ -195,13 +195,13 @@ func Live(db *DB, table models.Table, diff bool) (*models.UUID, error) {
 	return res.Result, nil
 }
 
-func Query[TResult any](db *DB, sql string, vars map[string]interface{}) (*[]QueryResult[TResult], error) {
+func Query[TResult any](db *DB, sql string, vars map[string]interface{}) ([]QueryResult[TResult], error) {
 	var res connection.RPCResponse[[]QueryResult[TResult]]
 	if err := db.con.Send(&res, "query", sql, vars); err != nil {
 		return nil, err
 	}
 
-	return res.Result, nil
+	return *res.Result, nil
 }
 
 func Create[TResult any, TWhat TableOrRecord](db *DB, what TWhat, data interface{}) (*TResult, error) {
